@@ -13,47 +13,12 @@
 ## wget -i download_list.txt downloads for bulk download from list
 
 touch download.sh
-nano download.sh
-
---- download.sh --- 
-#!/bin/bash
-
-# Set the path to the "download" folder
-dir="SRR"
-dl="download_list.txt"
-mkdir -p "$dir"
-
-# Download full list
-while read -r line
-do
-	echo "Downloading $line"
-	# Extract the sample name
-	filename=$(basename "$line")
-	sample="${filename%%_*}"
-	echo "Sample name $filename"
-	# Create fownload folder if not exist
-	mkdir -p "$dir/$sample"
-	# Download file
-	wget -P "$dir/$sample/" "$line"
-	echo "Downloaded $filename"
-done < "$dl"
-
-
---- end download.sh --- 
+nano download.sh 
+### insert content from 'download.sh'
 
 touch download_list.txt
 nano download_list.txt
-
---- download_list.txt ---
-ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR224/056/SRR22423456/SRR22423456_1.fastq.gz
-ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR224/056/SRR22423456/SRR22423456_2.fastq.gz
-ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR224/059/SRR22423459/SRR22423459_1.fastq.gz
-ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR224/059/SRR22423459/SRR22423459_2.fastq.gz
-ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR224/058/SRR22423458/SRR22423458_1.fastq.gz
-ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR224/058/SRR22423458/SRR22423458_2.fastq.gz
-ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR224/057/SRR22423457/SRR22423457_1.fastq.gz
-ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR224/057/SRR22423457/SRR22423457_2.fastq.gz
---- end download_list.txt ---
+### insert content from 'download_list.txt'
 
 bash download.sh
 
@@ -95,42 +60,14 @@ cat gencode.v47.transcripts.fa.gz GRCh38.primary_assembly.genome.fa.gz > GRCH38_
 ## Making indexing file for pseudoalignment
 salmon index -t GRCH38_and_decoys.fa.gz -d decoys.txt -p 16 -i GRCh38_salmon_index --gencode
 
-
 ## Run Salmon on one sample
 ## paired
 salmon quant -i GRCh38_salmon_index/ -l A -1 path_to_R1.fastq.gz -2 path_to_R2.fastq.gz --validateMappings -o salmon_out/out_directory
 ## unstranded
 salmon quant -i GRCh38_salmon_index/ -l A -r path_to.fastq.gz --validateMappings -o salmon_out/out_directory
 
-
-
 ## Start multiple file salmon script
 touch multiple_salmon.sh
 nano multiple_salmon.sh
-
---- multiple_salmon.sh ---
-#!/bin/bash
-
-# Set the path to the Salmon index
-salmon_index="GRCh38_salmon_index"
-
-# Set the path to the "fastq" folder
-fastq_dir="SRR"
-
-# Loop through all the directories within the "fastq" folder
-for dir in "${fastq_dir}"/SRR*; do
-    # Find the R1 and R2 FASTQ files
-    r1_file=$(find "$dir" -name "*_1.fastq.gz")
-    r2_file=$(find "$dir" -name "*_2.fastq.gz")
-
-    # Extract the sample name
-    samp=$(basename "$dir")
-
-    echo "Processing sample ${samp}"
-    salmon quant -i "$salmon_index" -l A \
-        -1 "$r1_file" \
-        -2 "$r2_file" \
-        -p 28 --validateMappings -o "salmon_out/${samp}_quant"
-done
---- end multiple_salmon.sh ---
+### insert content from 'multiple_salmon.sh'
 bash multiple_salmon.sh
